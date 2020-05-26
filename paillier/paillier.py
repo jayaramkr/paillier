@@ -61,6 +61,18 @@ def generate_keypair(bits):
     n = p * q
     return PrivateKey(p, q, n), PublicKey(n)
 
+def preprocess(pub):
+    while True:
+        r = primes.generate_prime(long(round(math.log(pub.n, 2))))
+        if r > 0 and r < pub.n:
+            break
+    x = pow(r, pub.n, pub.n_sq)
+    return x
+
+def encrypt_efficient(pub, plain, x):
+    cipher = (pow(pub.g, plain, pub.n_sq) * x) % pub.n_sq
+    return cipher
+
 def encrypt(pub, plain):
     while True:
         r = primes.generate_prime(long(round(math.log(pub.n, 2))))
